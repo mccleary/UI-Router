@@ -1,0 +1,8 @@
+<h3>Edit{{page_name}</h3>
+
+<!-- <textarea name="edit" rows="20" cols="80"></textarea><br>
+<button ng-click="done()">Done</button> -->
+
+
+<textarea ng-model="page.content" rows="8" cols="60"></textarea><br>
+<button ui-sref="page_view({page_name: pageName})">Done</button>

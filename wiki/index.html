@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Beginnings of a Wiki</title>
+    <script src="../angular.js"></script>
+    <script src="../angular-ui-router.js"></script>
+    <script>
+
+    function WikiPage(title, content) {
+      this.title = title;
+      this.content = content;
+    }
+    // functions like a database for pages
+    var pages = {
+      Python: new WikiPage('Python', 'Python is a fun to use programming language. It is great for beginners.'),
+      HTML: new WikiPage('HTML', 'HTML is the markup language used for making pages on the world wide web.')
+    };
+
+    var app = angular.module('wiki', ['ui.router']);
+
+
+    app.controller('WikiController', function($scope, $stateParams) {
+      $scope.pages = pages;
+    });
+
+    app.controller('WikiController', function($scope, $stateParams) {
+      $scope.wikiPage = pages[$stateParams.title];
+    });
+
+    app.controller('PageViewController', function($scope, $stateParams) {
+      $scope.pageName = $stateParams.page_name;
+      $scope.page = pages[$scope.page_name]
+    });
+
+    app.controller('PageEditController', function($scope, $stateParams) {
+      $scope.pageName = $stateParams.page_name;
+      $scope.page = pages[$scope.pageName];
+      if (!$scope.page) {
+        var page = new WikiPage($scope.pageName, '');
+        pages[$scope.pageName] = page;
+        $scope.page = page;
+      }
+    });
+
+
+    app.config(function($stateProvider, $urlRouterProvider) {
+      $stateProvider
+      .state({
+        name: 'page_view',
+        url: '/{page_name}',
+        templateUrl: 'page_view.html',
+        controller: 'PageViewController'
+      })
+      .state({
+        name: 'pages',
+        url: '/pages',
+        templateUrl: 'pages.html',
+        controller: 'WikiController'
+      })
+      .state({
+        name: 'pages.wikiPage',
+        url: '/{title}',
+        templateUrl: 'wikiPage.html',
+        controller: 'WikiController'
+        })
+      .state({
+        name: 'page_edit',
+        url: '/{page_name}/edit',
+        templateUrl: 'page_edit.html',
+        controller: 'PageEditController'
+        })
+
+        $urlRouterProvider.otherwise('/');
+    });
+
+    </script>
+
+  </head>
+
+  <body ng-app="wiki">
+    <nav>
+      <a ui-sref="home" ui-sref-active="active">Home</a>
+      <a ui-sref="python({title: 'Python'})" ui-sref-active="active">Python</a>
+      <a ui-sref="html({title: 'html'})" ui-sref-active="active">HTML</a>
+      <a ui-sref="page_edit({title: 'Python'})" ui-sref-active="active">Home</a>
+
+    </nav>
+    <ui-view></ui-view>
+
+  </body>
+</html>
